@@ -1,0 +1,65 @@
+:root {
+  --clr-yellow: #fc0;
+  --clr-grey: #9E9E9E;
+  --border-radius: 4px
+}
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box {
+  width: 600px;
+  padding: 40px
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.input {
+  height: 32px;
+  padding: 0 8px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--clr-grey);
+}
+
+.btn {
+  background: var(--clr-yellow);
+  border: none;
+  outline: none;
+  height: 32px;
+  border-radius: var(--border-radius);
+  padding: 0 20px;
+  margin-bottom: 40px;
+}
+
+.progress {
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.propgressLine {
+  height: 5px;
+  width: 10%;
+  background:  var(--clr-yellow);
+}
+
+
+.resultItem {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.resultCity {
+  font-weight: bold;
+  min-width: 200px;
+}
+
+.select {
+  background: var(--clr-yellow);
+}

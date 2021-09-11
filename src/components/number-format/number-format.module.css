@@ -1,0 +1,14 @@
+.phone {
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+.digit {
+    padding-right: 1px;
+}
+
+.selected {
+    background: var(--clr-yellow);
+}
+
