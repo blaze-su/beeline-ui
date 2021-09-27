@@ -1,23 +1,41 @@
 import {
     ChangeEventHandler,
     MouseEventHandler,
+    useCallback,
     useEffect,
     useRef,
     useState,
 } from "react";
+import { Found, Message, PhoneNumber } from "./types";
+
+import { GroupCity } from "./components/group-city/group-city";
+import { GroupNumber } from "./components/group-number";
+import { Percent } from "./components";
 import style from "./app.module.css";
-import { NumberFormat } from "./components";
-import { Found, Message } from "./types";
+
+const numbers = new Map()
 
 const App = () => {
     const [number, setNumber] = useState<string>("");
     const [percent, setPercent] = useState<number>(0);
     const [found, setFound] = useState<Found[]>([]);
+    const [numbers, setNumbers] = useState(new Map<string, PhoneNumber>())
+
+    const addNumber = useCallback((number: PhoneNumber) => {
+            setNumbers((map) => {
+                if (map.has(number.value)) return map;
+
+                map.set(number.value, number)
+
+                return new Map(map)
+            })
+    }, [numbers, setNumbers])
+
 
     const socket = useRef<WebSocket>();
 
     useEffect(() => {
-        socket.current = new WebSocket("ws://beeline-core.herokuapp.com");
+        socket.current = new WebSocket("wss://beeline-core.herokuapp.com");
 
         socket.current.onopen = () => {
             console.log("socket connected.");
@@ -28,8 +46,13 @@ const App = () => {
                 const message = JSON.parse(res.data) as Message;
 
                 setPercent(message.percent);
-                if (message.numbers.length)
+                if (message.numbers.length) {
                     setFound((data) => [...data, message]);
+
+                    message.numbers.forEach((number) => {
+                        addNumber(number);
+                    })
+                }
             } catch (error) {
                 console.log("Error: parce message", error);
             }
@@ -52,7 +75,7 @@ const App = () => {
     return (
         <div className={style.app}>
             <div className={style.box}>
-                <h1>Поиск номеров Beeline</h1>
+                <h1>Beeline</h1>
 
                 <div className={style.field}>
                     <input
@@ -63,34 +86,12 @@ const App = () => {
                 </div>
 
                 <button className={style.btn} onClick={handleFind}>
-                    Найти
+                    Найти номер
                 </button>
 
-                {percent > 0 && percent !== 100 ? (
-                    <div className={style.progress}>
-                        <div
-                            className={style.propgressLine}
-                            style={{ width: `${percent}%` }}
-                        ></div>
-                    </div>
-                ) : null}
-
-                <div className={style.result}>
-                    {found.map(({ city, numbers }) => {
-                        return (
-                            <div className={style.resultItem} key={city.code}>
-                                <div className={style.resultCity}>
-                                    {city.title}
-                                </div>
-                                <div className={style.resultNumbers}>
-                                    {numbers.map((currentNumber) => {
-                                        return NumberFormat(currentNumber);
-                                    })}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                <Percent data={percent} />
+                
+                <GroupNumber data={Array.from(numbers.values())} />
             </div>
         </div>
     );

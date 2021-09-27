@@ -1,63 +1,50 @@
 :root {
   --clr-yellow: #fc0;
   --clr-grey: #9E9E9E;
+  --clr-white: #fff;
+  --clr-dark: #282828;
   --border-radius: 4px
 }
 
+body {
+  background-color: var(--clr-dark);
+}
+
 .app {
-  width: 100%;
+  max-width: 375px;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--clr-white);
 }
 
 .box {
-  width: 600px;
   padding: 40px
 }
 
 .field {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .input {
-  height: 32px;
+  box-sizing: border-box;
+  height: 42px;
   padding: 0 8px;
+  width: 100%;
   border-radius: var(--border-radius);
   border: 1px solid var(--clr-grey);
+  font-size: 16px;
 }
 
 .btn {
   background: var(--clr-yellow);
   border: none;
   outline: none;
-  height: 32px;
+  height: 42px;
   border-radius: var(--border-radius);
   padding: 0 20px;
+  width: 100%;
+  margin: 0 auto;
   margin-bottom: 40px;
-}
-
-.progress {
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.propgressLine {
-  height: 5px;
-  width: 10%;
-  background:  var(--clr-yellow);
-}
-
-
-.resultItem {
-  display: flex;
-  margin-bottom: 20px;
-}
-
-.resultCity {
-  font-weight: bold;
-  min-width: 200px;
+  font-size: 16px;
 }
 
 .select {

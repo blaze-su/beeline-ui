@@ -1,0 +1,10 @@
+.box {
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  .line {
+    height: 5px;
+    width: 10%;
+    background:  var(--clr-yellow);
+  }

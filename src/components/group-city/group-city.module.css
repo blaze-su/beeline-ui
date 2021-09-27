@@ -1,0 +1,10 @@
+
+.item {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+.city {
+    font-weight: bold;
+    min-width: 200px;
+}
