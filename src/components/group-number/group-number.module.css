@@ -1,10 +1,10 @@
-.item {
-    border-top: 1px solid var(--clr-grey);
-    padding: 10px;
+.numbers :first-child {
+    border-top: none;
 }
 
-.item:first-child {
-    border-top: none;
+.item {
+    border-top: 1px solid var(--clr-grey-300);
+    padding: 10px;
 }
 
 .found {

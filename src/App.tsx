@@ -2,80 +2,107 @@ import {
     ChangeEventHandler,
     MouseEventHandler,
     useCallback,
-    useEffect,
     useRef,
     useState,
 } from "react";
-import { Found, Message, PhoneNumber } from "./types";
+import { City, Found, Message, PhoneNumber } from "./types";
 
 import { GroupCity } from "./components/group-city/group-city";
 import { GroupNumber } from "./components/group-number";
+import { Header } from "./components/header";
 import { Percent } from "./components";
 import style from "./app.module.css";
-
-const numbers = new Map()
 
 const App = () => {
     const [number, setNumber] = useState<string>("");
     const [percent, setPercent] = useState<number>(0);
-    const [found, setFound] = useState<Found[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [numbers, setNumbers] = useState(new Map<string, PhoneNumber>())
 
-    const addNumber = useCallback((number: PhoneNumber) => {
-            setNumbers((map) => {
-                if (map.has(number.value)) return map;
+    const getAvailabilityInCities = useCallback((value: string) => {
+        const cities: City[] = [];
+        messages.forEach(({ city, numbers }) => {
+            const found = numbers.find((number) => number.value === value);
+            if(found) cities.push(city);
+        })
 
-                map.set(number.value, number)
+        return cities;
+    }, [messages])
 
-                return new Map(map)
-            })
+    const addNumber = useCallback((phoneNumber: PhoneNumber) => {
+        const { value } = phoneNumber;
+
+        setNumbers((map) => {
+            if (map.has(value)) return map;
+
+            map.set(value, phoneNumber)
+
+            return new Map(map)
+        })
+        
     }, [numbers, setNumbers])
 
 
     const socket = useRef<WebSocket>();
-
-    useEffect(() => {
-        socket.current = new WebSocket("wss://beeline-core.herokuapp.com");
-
-        socket.current.onopen = () => {
-            console.log("socket connected.");
-        };
-
-        socket.current.onmessage = (res) => {
-            try {
-                const message = JSON.parse(res.data) as Message;
-
-                setPercent(message.percent);
-                if (message.numbers.length) {
-                    setFound((data) => [...data, message]);
-
-                    message.numbers.forEach((number) => {
-                        addNumber(number);
-                    })
-                }
-            } catch (error) {
-                console.log("Error: parse message", error);
-            }
-        };
-    }, []);
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setNumber(e.target.value);
     };
 
     const handleFind: MouseEventHandler = () => {
-        socket.current?.send(
-            JSON.stringify({
+        setNumbers(new Map());
+        socket.current?.close();
+
+        const client = new WebSocket("wss://beeline-core.herokuapp.com");
+
+        client.onopen = () => {
+            console.log("socket connected.");
+
+            const res = JSON.stringify({
                 type: "number",
                 payload: number,
             })
-        );
+
+            setTimeout(() => {
+                client.send(res)
+            }, 1000);
+        };
+
+        client.onmessage = (res) => {
+            try {
+                const message = JSON.parse(res.data) as Message;
+                const { percent, numbers, city } = message;
+
+                setPercent(percent);
+
+                if (numbers.length) {
+                    setMessages((data) => [...data, message]);
+
+                    numbers.forEach((number) => {
+                        addNumber(number);
+                    })
+                }
+
+            } catch (error) {
+                console.log("Error: parse message", error);
+            }
+        };
+
+        socket.current = client;
     };
+
+    const handleStop: MouseEventHandler = () => {
+        setPercent(0);
+        socket.current?.close();
+        socket.current = undefined;
+    }
 
     return (
         <div className={style.app}>
             <div className={style.box}>
-                <h1>Beeline</h1>
+                <Percent data={percent} />
+
+                <Header />
 
                 <div className={style.field}>
                     <input
@@ -85,13 +112,14 @@ const App = () => {
                     />
                 </div>
 
-                <button className={style.btn} onClick={handleFind}>
+                {!percent ? (<button className={style.btn} onClick={handleFind}>
                     Найти номер
                 </button>
-
-                <Percent data={percent} />
+                ) : (<button className={style.btn} onClick={handleStop}>
+                    Остановить поиск
+                </button>)}
                 
-                <GroupNumber data={Array.from(numbers.values())} />
+                <GroupNumber data={Array.from(numbers.values())} getAvailabilityInCities={getAvailabilityInCities} />
             </div>
         </div>
     );

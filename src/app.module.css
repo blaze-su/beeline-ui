@@ -1,6 +1,7 @@
 :root {
   --clr-yellow: #fc0;
   --clr-grey: #9E9E9E;
+  --clr-grey-300: #f1f2f3;
   --clr-white: #fff;
   --clr-dark: #282828;
   --border-radius: 4px
@@ -11,7 +12,8 @@ body {
 }
 
 .app {
-  max-width: 375px;
+  position: relative;
+  max-width: 420px;
   min-height: 100vh;
   background: var(--clr-white);
 }
