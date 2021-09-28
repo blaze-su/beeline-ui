@@ -54,7 +54,7 @@ const App = () => {
                     })
                 }
             } catch (error) {
-                console.log("Error: parce message", error);
+                console.log("Error: parse message", error);
             }
         };
     }, []);
