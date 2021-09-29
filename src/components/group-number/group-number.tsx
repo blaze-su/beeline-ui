@@ -1,6 +1,7 @@
 import { City, PhoneNumber } from "../../types";
+import { MouseEventHandler, useState } from "react";
 
-import { MouseEventHandler } from "react";
+import { Detail } from "./components";
 import { NumberFormat } from "../number-format";
 import style from "./group-number.module.css";
 
@@ -11,11 +12,23 @@ export type GroupNumberProps = {
 
 
 export const GroupNumber = ({ data, getAvailabilityInCities }: GroupNumberProps) => {
-    const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
-       // const attr = (e.target as HTMLDivElement).getAttribute('data-number-value');
+    const [selected, setSelected] = useState<string | null>(null);
+
+    const handleClick: MouseEventHandler<HTMLElement> = (e) => {
+       
+        let target = e.target as HTMLElement;
+        let value = target.getAttribute('data-number-value');
         
-        const attr = (e.target as HTMLDivElement).parentElement?.getAttribute('data-number-value')
-        console.log(attr)
+        if(!value) {
+            while(target.parentElement) {
+                target = target.parentElement;
+                value = target.getAttribute('data-number-value');
+                if(value) break;
+            }
+        }
+
+        setSelected(selected === value ? null : value);
+        console.log("value", value)
 
     }
 
@@ -31,23 +44,10 @@ export const GroupNumber = ({ data, getAvailabilityInCities }: GroupNumberProps)
                     return (
                         <div key={currentNumber.value} data-number-value={currentNumber.value}>
                             <div className={style.item}>{NumberFormat(currentNumber)}</div>
+                            {selected === currentNumber.value && <Detail cities={getAvailabilityInCities(currentNumber.value)} />}
                         </div>)
                 })
             }
         </div>
-    </div>
-}
-
-type DetailProps = {
-    cities: City[]
-}
-
-const Detail = ({ cities }: DetailProps) => {
-    return <div>
-        {
-            cities.map(({ title, code }) => {
-                return <div key={code}>{title}</div>
-            })
-        }
     </div>
 }

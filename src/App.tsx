@@ -5,12 +5,12 @@ import {
     useRef,
     useState,
 } from "react";
-import { City, Found, Message, PhoneNumber } from "./types";
+import { City, Message, PhoneNumber } from "./types";
 
-import { GroupCity } from "./components/group-city/group-city";
 import { GroupNumber } from "./components/group-number";
 import { Header } from "./components/header";
 import { Percent } from "./components";
+import cn from "classnames"
 import style from "./app.module.css";
 
 const App = () => {
@@ -57,15 +57,6 @@ const App = () => {
 
         client.onopen = () => {
             console.log("socket connected.");
-
-            const res = JSON.stringify({
-                type: "number",
-                payload: number,
-            })
-
-            setTimeout(() => {
-                client.send(res)
-            }, 1000);
         };
 
         client.onmessage = (res) => {
@@ -85,6 +76,12 @@ const App = () => {
 
             } catch (error) {
                 console.log("Error: parse message", error);
+                const res = JSON.stringify({
+                    type: "number",
+                    payload: number,
+                })
+    
+                client.send(res)       
             }
         };
 
@@ -100,8 +97,6 @@ const App = () => {
     return (
         <div className={style.app}>
             <div className={style.box}>
-                <Percent data={percent} />
-
                 <Header />
 
                 <div className={style.field}>
@@ -112,11 +107,12 @@ const App = () => {
                     />
                 </div>
 
-                {!percent ? (<button className={style.btn} onClick={handleFind}>
+                {!percent || percent === 100 ? (<button className={style.btn} onClick={handleFind}>
                     Найти номер
                 </button>
-                ) : (<button className={style.btn} onClick={handleStop}>
-                    Остановить поиск
+                ) : (<button className={cn(style.btn, style['btn-light'])} onClick={handleStop}>
+                    <Percent data={percent} />
+                    <span className={style.btnContent}>Остановить поиск</span>
                 </button>)}
                 
                 <GroupNumber data={Array.from(numbers.values())} getAvailabilityInCities={getAvailabilityInCities} />

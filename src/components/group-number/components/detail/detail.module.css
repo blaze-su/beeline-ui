@@ -1,0 +1,11 @@
+.box {
+    background: var(--clr-grey-300);
+    padding: 15px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.city + .city {
+    padding-top: 10px;
+}

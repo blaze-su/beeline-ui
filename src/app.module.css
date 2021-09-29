@@ -37,6 +37,7 @@ body {
 }
 
 .btn {
+  position: relative;
   background: var(--clr-yellow);
   border: none;
   outline: none;
@@ -47,6 +48,27 @@ body {
   margin: 0 auto;
   margin-bottom: 40px;
   font-size: 16px;
+  overflow: hidden;
+}
+
+.btnContent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-light {
+  background: none;
+  border: 1px solid var(--clr-yellow);
+}
+
+.btn--disable {
+  background: var(--clr-grey-300);
 }
 
 .select {

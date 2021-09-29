@@ -3,14 +3,13 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 10px;
+    height: 40px;
     overflow: hidden;
     margin-bottom: 20px;
-    background: var(--clr-grey-300);
   }
   
   .line {
-    height: 10px;
+    height: 100%;
     width: 10%;
     background:  var(--clr-yellow);
   }
