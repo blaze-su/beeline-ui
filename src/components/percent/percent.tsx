@@ -1,21 +1,15 @@
 import style from "./percent.module.css";
 
 export type PercentProps = {
-    data: number
-}
+   data: number;
+};
 
-export const Percent  = ({data}: PercentProps) => {
+export const Percent = ({data}: PercentProps) => {
+   if (!data || data === 100) return null;
 
-    if(!data || data === 100) return null 
-
-    return (
-        <div className={style.box}>
-            <div
-                className={style.line}
-                style={{ width: `${data}%` }}
-            ></div>
-        </div>
-    )
-}
-
-
+   return (
+      <div className={style.box}>
+         <div className={style.line} style={{width: `${data}%`}}></div>
+      </div>
+   );
+};
